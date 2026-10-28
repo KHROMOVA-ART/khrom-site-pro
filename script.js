@@ -241,54 +241,142 @@ if (sectionModal) {
   const related = document.getElementById("orbit-related");
   let current = null; // { items, origin } — чтобы переразложить пузыри при смене размера окна
 
-  // раскладка: столько рядов, чтобы пузыри получились как можно крупнее и все влезли
-  const layout = (n, w, h) => {
-    const gap = 1.16;
-    const cap = Math.min(340, Math.max(150, Math.min(w, h) * 0.46));
-    let best = { rows: 1, d: 0 };
-    for (let rows = 1; rows <= n; rows++) {
-      const perRow = Math.ceil(n / rows);
-      // запас по высоте на покачивание и разнобой рядов
-      const d = Math.min(cap, w / (perRow * gap), h / (rows * gap + 0.15));
-      // лишний ряд берём, только если пузыри от этого заметно крупнее
-      if (d > best.d * 1.2) best = { rows, d };
+  // раздел — планета: в центре большая картинка-пример, вокруг по наклонённой орбите летают пузыри проектов.
+  // Задняя половина орбиты уходит за планету, передняя проходит перед ней.
+  const NS = "http://www.w3.org/2000/svg";
+  let geo = null;
+  let raf = 0;
+  let last = 0;
+  let spin = 0;
+  let pace = 1;
+  let hovered = 0;
+
+  const measurePlanet = (n) => {
+    const box = stage.getBoundingClientRect();
+    const w = box.width;
+    const h = box.height;
+    const portrait = h > w;
+    const P = Math.min(h * (portrait ? 0.42 : 0.56), w * (portrait ? 0.62 : 0.32), 540);
+    // на телефоне орбита вытягивается по высоте экрана, на десктопе — по ширине
+    const radii = (d) => portrait
+      ? { rx: Math.min(w / 2 - d * 0.5, P / 2 + d * 0.7), ry: Math.min(h / 2 - d * 0.5, P / 2 + d * 1.2) }
+      : { rx: Math.min(w / 2 - d * 0.5, P / 2 + d * 1.25), ry: Math.min(h / 2 - d * 0.5, P / 2 + d * 0.15) };
+    let d = Math.min(h * (portrait ? 0.15 : 0.22), portrait ? 120 : 200);
+    // у боков орбиты соседи сближаются — уменьшаем пузыри, чтобы не слипались
+    if (n > 1) {
+      const { rx, ry } = radii(d);
+      d = Math.max(portrait ? 72 : 84, Math.min(d, (Math.min(rx * 1.3, ry) * Math.PI * 2) / n * 0.9));
     }
-    const d = best.d;
-    const perRow = Math.ceil(n / best.rows);
-    const points = [];
-    for (let i = 0; i < n; i++) {
-      const row = Math.floor(i / perRow);
-      const inRow = Math.min(perRow, n - row * perRow);
-      const col = i % perRow;
-      // лёгкий разнобой по высоте, чтобы пузыри висели не по линейке
-      const drift = (((i * 37) % 7) - 3) * d * 0.035;
-      points.push({
-        x: w / 2 + (col - (inRow - 1) / 2) * d * gap,
-        y: h / 2 + (row - (best.rows - 1) / 2) * d * gap + drift,
-      });
-    }
-    return { d, points };
+    const { rx, ry } = radii(d);
+    return { box, w, h, P, d, rx, ry, cx: w / 2, cy: h / 2 };
+  };
+
+  const renderPlanet = () => {
+    if (!geo) return;
+    const { cx, cy, rx, ry, d } = geo;
+    const slots = stage.querySelectorAll(".orbit__slot");
+    slots.forEach((slot, i) => {
+      const a = Math.PI / 2 + 0.35 + (i / slots.length) * Math.PI * 2 + spin;
+      const depth = Math.sin(a);
+      const near = (depth + 1) / 2;
+      const s = 0.68 + near * 0.32;
+      slot.style.transform = `translate3d(${cx + Math.cos(a) * rx - d / 2}px, ${cy + depth * ry - d / 2}px, 0) scale(${s})`;
+      slot.style.zIndex = slot.matches(":hover") ? 6 : depth > 0 ? 4 : 1;
+      slot.style.opacity = (0.78 + near * 0.22).toFixed(3);
+    });
+  };
+
+  const spinTick = (now) => {
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    pace += ((hovered ? 0 : 1) - pace) * Math.min(1, dt * 4);
+    spin += dt * 0.09 * pace;
+    renderPlanet();
+    raf = requestAnimationFrame(spinTick);
+  };
+  const stopSpin = () => {
+    cancelAnimationFrame(raf);
+    raf = 0;
+  };
+  const startSpin = () => {
+    stopSpin();
+    renderPlanet();
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    last = performance.now();
+    raf = requestAnimationFrame(spinTick);
   };
 
   const place = (animate) => {
     if (!current) return;
     const { items, origin } = current;
-    const box = stage.getBoundingClientRect();
-    const { d, points } = layout(items.length, box.width, box.height);
-    [...stage.children].forEach((node, i) => {
-      const p = points[i];
-      node.style.width = node.style.height = `${d}px`;
-      node.style.left = `${p.x - d / 2}px`;
-      node.style.top = `${p.y - d / 2}px`;
-      node.style.setProperty("--fx", `${origin.x - box.left - p.x}px`);
-      node.style.setProperty("--fy", `${origin.y - box.top - p.y}px`);
-      node.style.animationDelay = `${i * 90}ms`;
-      // кромка линзы и сила преломления — от размера пузыря, чтобы на телефоне не было перебора
+    geo = measurePlanet(items.length);
+    const { box, P, d, cx, cy, rx, ry } = geo;
+    const planet = stage.querySelector(".orbit__planet");
+    if (planet) {
+      planet.style.width = planet.style.height = `${P}px`;
+      planet.style.left = `${cx - P / 2}px`;
+      planet.style.top = `${cy - P / 2}px`;
+      planet.style.setProperty("--fx", `${origin.x - box.left - cx}px`);
+      planet.style.setProperty("--fy", `${origin.y - box.top - cy}px`);
+      const glass = planet.querySelector(".orbit__glass");
+      glass.dataset.glassBezel = Math.round(P * 0.12);
+      glass.dataset.glassScale = Math.round(P * 0.14);
+      if (!animate) planet.style.animation = "none";
+    }
+    stage.querySelectorAll(".system__rings").forEach((svg, k) => {
+      svg.setAttribute("viewBox", `0 0 ${geo.w} ${geo.h}`);
+      svg.innerHTML = `<path d="M ${cx - rx} ${cy} A ${rx} ${ry} 0 0 ${k ? 0 : 1} ${cx + rx} ${cy}"/>`;
+    });
+    renderPlanet();
+    stage.querySelectorAll(".orbit__slot").forEach((slot, i) => {
+      slot.style.width = slot.style.height = `${d}px`;
+      const node = slot.firstElementChild;
+      // пузыри вылетают из планеты
+      const r = slot.getBoundingClientRect();
+      node.style.setProperty("--fx", `${box.left + cx - (r.left + r.width / 2)}px`);
+      node.style.setProperty("--fy", `${box.top + cy - (r.top + r.height / 2)}px`);
+      node.style.animationDelay = `${380 + i * 70}ms`;
       const glass = node.querySelector(".orbit__glass");
       glass.dataset.glassBezel = Math.round(d * 0.15);
       glass.dataset.glassScale = Math.round(d * 0.19);
       if (!animate) node.style.animation = "none";
     });
+  };
+
+  // картинка планеты: data-planet="id-кейса/файл" у бабла раздела, иначе второй кадр галереи главного кейса
+  const planetImage = (bubble, item) => {
+    const own = bubble.dataset.planet;
+    if (own) return `./assets/cases/${own}`;
+    const src = (item.gallery || [])
+      .map((g) => g.src)
+      .find((f) => f && f !== item.cover && /\.(jpe?g|png|webp|avif)$/i.test(f));
+    return window.caseImage(item, src || item.cover);
+  };
+
+  const bubbleFor = (item, i, href, planetSrc) => {
+    const a = document.createElement(href ? "a" : "div");
+    a.className = "orbit__bubble";
+    if (href) {
+      a.href = href;
+      a.setAttribute("aria-label", item.title);
+    }
+    // лёгкая квадратная миниатюра (assets/thumbs, см. thumbs.sh); проявляется, когда загрузилась
+    const img = document.createElement("img");
+    img.alt = "";
+    img.decoding = "async";
+    img.addEventListener("load", () => a.classList.add("is-loaded"), { once: true });
+    img.addEventListener("error", () => {
+      img.src = window.caseImage(item, item.cover);
+    }, { once: true });
+    // планете нужна картинка покрупнее миниатюры
+    img.src = planetSrc || window.caseThumb(item);
+    if (img.complete && img.naturalWidth) a.classList.add("is-loaded");
+    const glass = document.createElement("span");
+    glass.className = "orbit__glass";
+    glass.dataset.glassRound = "";
+    glass.dataset.glassId = `orbit-${i}`;
+    a.append(img, glass);
+    return a;
   };
 
   window.openSectionModal = (bubble) => {
@@ -304,6 +392,9 @@ if (sectionModal) {
     const r = bubble.getBoundingClientRect();
     current = { items, origin: { x: r.left + r.width / 2, y: r.top + r.height / 2 } };
     stage.classList.toggle("is-empty", !items.length);
+    hovered = 0;
+    pace = 1;
+    spin = 0;
     if (!items.length) {
       stage.replaceChildren(
         Object.assign(document.createElement("p"), {
@@ -312,43 +403,46 @@ if (sectionModal) {
         }),
       );
       current = null;
+      geo = null;
     } else {
-      stage.replaceChildren(
-        ...items.map((item, i) => {
-          const wrap = document.createElement("div");
-          wrap.className = "orbit__item";
-          // пузырь: заставка на весь круг, сверху стеклянная линза
-          const a = document.createElement("a");
-          a.className = "orbit__bubble";
-          a.href = `./case.html?id=${encodeURIComponent(item.id)}`;
-          a.setAttribute("aria-label", item.title);
-          // лёгкая квадратная миниатюра (assets/thumbs, см. thumbs.sh); проявляется, когда загрузилась
-          const img = document.createElement("img");
-          img.alt = "";
-          img.decoding = "async";
-          img.addEventListener("load", () => a.classList.add("is-loaded"), { once: true });
-          img.addEventListener("error", () => {
-            img.src = window.caseImage(item, item.cover);
-          }, { once: true });
-          img.src = window.caseThumb(item);
-          if (img.complete && img.naturalWidth) a.classList.add("is-loaded");
-          const glass = document.createElement("span");
-          glass.className = "orbit__glass";
-          glass.dataset.glassRound = "";
-          glass.dataset.glassId = `orbit-${i}`;
-          a.append(img, glass);
-          wrap.append(a);
-          return wrap;
-        }),
-      );
+      const ring = (cls) => {
+        const svg = document.createElementNS(NS, "svg");
+        svg.setAttribute("class", `system__rings ${cls}`);
+        svg.setAttribute("aria-hidden", "true");
+        return svg;
+      };
+      // планета — картинка главного кейса направления
+      const planet = document.createElement("div");
+      planet.className = "orbit__item orbit__planet";
+      planet.append(bubbleFor(items[0], "planet", null, planetImage(bubble, items[0])));
+      const slots = items.map((item, i) => {
+        const slot = document.createElement("div");
+        slot.className = "orbit__slot";
+        const wrap = document.createElement("div");
+        wrap.className = "orbit__item";
+        wrap.append(bubbleFor(item, i, `./case.html?id=${encodeURIComponent(item.id)}`));
+        const label = document.createElement("span");
+        label.className = "orbit__label";
+        label.textContent = item.title;
+        wrap.append(label);
+        slot.append(wrap);
+        // наведение останавливает вращение
+        slot.addEventListener("pointerenter", () => { hovered++; });
+        slot.addEventListener("pointerleave", () => { hovered = Math.max(0, hovered - 1); });
+        return slot;
+      });
+      stage.replaceChildren(ring("system__rings--back"), planet, ring("system__rings--front"), ...slots);
     }
     openModal(sectionModal);
     place(true);
+    if (current) startSpin();
     // стеклянная линза (тяжёлый SVG-фильтр) включается, когда пузыри долетели, — иначе полёт дёргается
     clearTimeout(glassTimer);
-    const settle = 1300 + Math.max(0, items.length - 1) * 90;
+    const settle = 1300 + 380 + Math.max(0, items.length - 1) * 70;
     glassTimer = setTimeout(() => {
-      if (window.liquidGlass) stage.querySelectorAll(".orbit__glass").forEach((g) => window.liquidGlass(g));
+      // линза только у планеты: на постоянно летящих пузырях она съедает кадры — у них мягкое CSS-стекло
+      const glass = stage.querySelector(".orbit__planet .orbit__glass");
+      if (window.liquidGlass && glass) window.liquidGlass(glass);
     }, settle);
   };
   let glassTimer = 0;
@@ -398,7 +492,10 @@ if (sectionModal) {
       closeModal(sectionModal);
       popping = false;
       window.setTimeout(() => {
-        if (!sectionModal.classList.contains("is-open")) stage.replaceChildren();
+        if (!sectionModal.classList.contains("is-open")) {
+          stopSpin();
+          stage.replaceChildren();
+        }
       }, 300);
     }, bubbles.length * step + 420);
   };

@@ -2324,3 +2324,98 @@ main {
     filter: blur(4px);
   }
 }
+
+/* --- система: разделы на орбитах вокруг фигурки (system.js, десктоп) --- */
+
+.system__rings {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke: rgba(49, 39, 35, 0.16);
+  stroke-width: 1;
+}
+
+.system__rings--back {
+  z-index: 0;
+}
+
+/* ближняя половина орбит проходит перед фигуркой */
+.system__rings--front {
+  z-index: 3;
+  stroke: rgba(49, 39, 35, 0.2);
+}
+
+.hero__canvas.is-system .hero__bubble {
+  left: 0;
+  top: 0;
+  translate: none;
+  scale: none;
+  cursor: pointer;
+  animation: none;
+  will-change: transform, opacity;
+  transition: box-shadow 300ms ease;
+}
+
+/* --- раздел-планета: проекты на орбите вокруг картинки раздела --- */
+
+.orbit__slot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform, opacity;
+}
+
+.orbit__slot > .orbit__item {
+  inset: 0;
+}
+
+.orbit__planet {
+  z-index: 2;
+}
+
+/* планета не ссылка: просто покачивается медленнее пузырей */
+.orbit__planet .orbit__bubble {
+  pointer-events: none;
+  animation-duration: 9s;
+  box-shadow: 0 30px 60px rgba(80, 70, 90, 0.14);
+}
+
+.orbit__stage .system__rings--back {
+  z-index: 0;
+}
+
+.orbit__stage .system__rings--front {
+  z-index: 3;
+}
+
+/* название проекта всплывает под пузырём при наведении */
+.orbit__label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  translate: -50% 4px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #312723;
+  font-family: "Cygre Medium", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.15;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease, translate 220ms ease;
+}
+
+.orbit__slot:hover .orbit__label,
+.orbit__slot:focus-within .orbit__label {
+  opacity: 1;
+  translate: -50% 0;
+}
