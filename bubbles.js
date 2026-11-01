@@ -294,6 +294,11 @@
         suppressClick = false;
         return;
       }
+      // пузырь одного кейса ведёт прямо на его страницу
+      if (el.hasAttribute("data-case")) {
+        window.location.href = el.href;
+        return;
+      }
       if (typeof window.openSectionModal === "function") window.openSectionModal(el);
     });
     el.addEventListener("dragstart", (e) => e.preventDefault());

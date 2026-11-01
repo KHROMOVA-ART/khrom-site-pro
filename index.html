@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Michroma&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=en-3" />
+    <link rel="stylesheet" href="./styles.css?v=en-4" />
   </head>
   <body>
     <div class="loader" id="loader" aria-live="polite">
@@ -108,22 +108,18 @@
           <div class="hero__veil" aria-hidden="true"></div>
           <!-- мобильная версия: разделы спрятаны в кнопку «проекты» -->
           <div class="hero__sections-veil" id="hero-sections-veil" aria-hidden="true"></div>
-          <button class="hero__projects" id="hero-projects" type="button" aria-expanded="false">projects</button>
-          <a class="hero__bubble hero__bubble--env" href="./projects.html?tag=env" data-section="env" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Spaces, exhibitions, wayfinding and installations: how a visual system lives in the real world.">spatial<br />design</a>
-          <a class="hero__bubble hero__bubble--product" href="./projects.html?tag=product" data-section="product" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Digital products and services: research, user flows, interfaces and design systems.">product<br />design</a>
-          <a class="hero__bubble hero__bubble--motion" href="./projects.html?tag=motion" data-section="motion" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Animation, motion design and video: from storyboards and style to leading a production team.">animation<br />art direction</a>
-          <a class="hero__bubble hero__bubble--brand" href="./projects.html?tag=brand" data-section="brand" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Identities and brand platforms: from strategy and meaning to the logo and guidelines.">branding</a>
-          <a class="hero__bubble hero__bubble--pres" href="./projects.html?tag=pres" data-section="pres" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Presentations and pitch decks that sell an idea: structure, storytelling and visuals.">pitch<br />decks</a>
-          <a class="hero__bubble hero__bubble--ai" href="./projects.html?tag=ai" data-section="ai" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Generative images, video and 3D: neural networks as part of the creative process.">AI<br />creative</a>
-          <a class="hero__bubble hero__bubble--vibe" href="./projects.html?tag=vibe" data-section="vibe" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Websites and interactive prototypes built together with AI: from idea to a live product.">vibe<br />coding</a>
-          <a class="hero__bubble hero__bubble--web" href="./projects.html?tag=web" data-section="web" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Interfaces, landing pages and websites: UX logic, visual style and developer handoff.">web<br />design</a>
-          <a class="hero__bubble hero__bubble--type" href="./projects.html?tag=type" data-section="type" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Type, layout and book design: modular grids, page rhythm and the typographic system of a publication.">typography</a>
-          <a class="hero__bubble hero__bubble--industrial" href="./projects.html?tag=industrial" data-section="industrial" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Objects and furniture: from the concept and transforming mechanisms to sketches and renders.">industrial<br />design</a>
-          <a class="hero__bubble hero__bubble--research" href="./projects.html?tag=research" data-section="research" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="The research projects start with: cultural codes, references, expert input and maps of meaning.">research</a>
-          <a class="hero__bubble hero__bubble--fun" href="./projects.html?tag=fun" data-section="fun" aria-haspopup="dialog" aria-controls="section-modal" data-section-text="Experiments and things made just for fun: type, playing with form and ideas without a client.">just for fun</a>
+          <button class="hero__projects" id="hero-projects" type="button" aria-expanded="false">selected work</button>
+          <!-- английская версия: на главной только избранные кейсы; пузырь с одним кейсом ведёт прямо в него -->
+          <a class="hero__bubble hero__bubble--env" href="./case.html?id=kinostudiya-moskva" data-case>film studio<br />brand</a>
+          <a class="hero__bubble hero__bubble--motion" href="./case.html?id=papushevo" data-case>AI animated<br />series</a>
+          <a class="hero__bubble hero__bubble--vibe" href="./projects.html?tag=vibe" data-section="vibe" data-cases="utair-landing,medrentech-landing" aria-haspopup="dialog" aria-controls="section-modal">landing pages<br />for tenders</a>
+          <a class="hero__bubble hero__bubble--brand" href="./case.html?id=equilibrium" data-case>catalogue<br />&amp; landing</a>
+          <a class="hero__bubble hero__bubble--type" href="./case.html?id=multimedia-book" data-case>book<br />design</a>
+          <a class="hero__bubble hero__bubble--web" href="./case.html?id=pixar-landing" data-case>Pixar<br />longread</a>
+          <a class="hero__bubble hero__bubble--industrial" href="./case.html?id=engineering-club" data-case>engineering<br />club</a>
           <div class="hero__footer">
             <nav class="hero__bottom-nav" aria-label="Section navigation">
-              <a href="./projects.html">projects</a>
+              <a href="./projects.html">all projects</a>
               <span>•</span>
               <a class="archive-link" href="./tools.html">archive<span class="archive-bubble" aria-hidden="true">design tools<br />I&nbsp;have built</span></a>
             </nav>
@@ -160,7 +156,7 @@
           <header class="cv__head">
             <h2 class="cv__name" id="journey-title">ekaterina khromova</h2>
             <p class="cv__role">art director</p>
-            <p class="cv__meta">Based in Moscow (UTC+3) · <a href="mailto:knopa.khrom@yandex.ru">knopa.khrom@yandex.ru</a> · <a href="https://t.me/knopa_khrom" target="_blank" rel="noreferrer">t.me/knopa_khrom</a></p>
+            <p class="cv__meta">Based in Moscow (UTC+3) · open to remote work · <a href="mailto:knopa.khrom@yandex.ru">knopa.khrom@yandex.ru</a> · <a href="https://t.me/knopa_khrom" target="_blank" rel="noreferrer">t.me/knopa_khrom</a></p>
           </header>
 
           <p class="cv__lead">
@@ -338,10 +334,10 @@
         }
       }
     </script>
-    <script src="./cases.js?v=en-3"></script>
-    <script src="./script.js?v=en-3"></script>
-    <script src="./glass.js?v=en-3"></script>
-    <script src="./bubbles.js?v=en-3"></script>
-    <script type="module" src="./character.js?v=en-3"></script>
+    <script src="./cases.js?v=en-4"></script>
+    <script src="./script.js?v=en-4"></script>
+    <script src="./glass.js?v=en-4"></script>
+    <script src="./bubbles.js?v=en-4"></script>
+    <script type="module" src="./character.js?v=en-4"></script>
   </body>
 </html>

@@ -294,9 +294,13 @@ if (sectionModal) {
   window.openSectionModal = (bubble) => {
     const tag = bubble.dataset.section;
     // сначала кейсы, для которых это направление основное (первый тег), потом остальные
-    const items = (window.CASES || [])
-      .filter((c) => c.tags.includes(tag))
-      .sort((a, b) => a.tags.indexOf(tag) - b.tags.indexOf(tag));
+    // data-cases — явный список кейсов для пузыря (английская главная), иначе все кейсы направления
+    const picked = bubble.dataset.cases ? bubble.dataset.cases.split(",") : null;
+    const items = picked
+      ? picked.map((id) => (window.CASES || []).find((c) => c.id === id)).filter(Boolean)
+      : (window.CASES || [])
+          .filter((c) => c.tags.includes(tag))
+          .sort((a, b) => a.tags.indexOf(tag) - b.tags.indexOf(tag));
     title.textContent = bubble.innerText.replace(/\s+/g, " ").trim();
     // вайбкодинг тесно связан с архивом инструментов — даём перейти туда прямо отсюда
     related.hidden = tag !== "vibe";
