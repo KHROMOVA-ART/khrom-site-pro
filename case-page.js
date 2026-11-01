@@ -41,7 +41,7 @@
     };
 
     for (const t of ["all", ...used]) {
-      const b = el("button", "projects__filter", t === "all" ? "все" : tags[t]);
+      const b = el("button", "projects__filter", t === "all" ? "all" : tags[t]);
       b.type = "button";
       b.dataset.tag = t;
       b.addEventListener("click", () => {
@@ -60,7 +60,7 @@
   const index = cases.findIndex((c) => c.id === params.get("id"));
   if (!root || index < 0) return;
   const item = cases[index];
-  document.title = `${item.title} — Екатерина Хромова`;
+  document.title = `${item.title} — Ekaterina Khromova`;
 
   // структура рассказа: шапка → обложка → разделы (основное, исследование, процесс, результат) → ещё кейсы
   const head = el("header", "case__head");
@@ -98,7 +98,7 @@
     const fig = el("figure", "case__shot");
     const button = el("button", "case__shot-button");
     button.type = "button";
-    button.setAttribute("aria-label", `Открыть: ${g.caption || "изображение"}`);
+    button.setAttribute("aria-label", `Open: ${g.caption || "image"}`);
     const image = el("img");
     image.src = img(item, g.src);
     image.alt = g.caption || "";
@@ -107,8 +107,8 @@
     if (g.board) {
       // доска из Figma: по клику открывается на весь экран, её можно двигать и приближать
       button.classList.add("case__board-button");
-      button.setAttribute("aria-label", `Рассмотреть доску: ${g.caption || "доска проекта"}`);
-      button.append(el("span", "case__board-label", "рассмотреть доску ↗"));
+      button.setAttribute("aria-label", `Explore the board: ${g.caption || "project board"}`);
+      button.append(el("span", "case__board-label", "explore the board ↗"));
       // путь от корня сайта («./assets/canvas/…») или внутри папки кейса
       button.addEventListener("click", () => openBoard(g.board.startsWith("./") ? g.board : img(item, g.board)));
     } else {
@@ -164,7 +164,7 @@
           const deck = el("div", "case__deck");
           const track = el("div", "case__deck-track");
           track.tabIndex = 0;
-          track.setAttribute("aria-label", "слайды презентации");
+          track.setAttribute("aria-label", "presentation slides");
           for (const src of part.slides) {
             const i = item.gallery.findIndex((g) => g.src === src);
             shownImages.add(src);
@@ -181,8 +181,8 @@
           const prev = el("button", "case__deck-nav case__deck-nav--prev", "←");
           const next = el("button", "case__deck-nav case__deck-nav--next", "→");
           prev.type = next.type = "button";
-          prev.setAttribute("aria-label", "предыдущий слайд");
-          next.setAttribute("aria-label", "следующий слайд");
+          prev.setAttribute("aria-label", "previous slide");
+          next.setAttribute("aria-label", "next slide");
           const counter = el("span", "case__deck-count");
           const current = () => (track.clientWidth ? Math.round(track.scrollLeft / track.clientWidth) : 0);
           const go = (k) => track.scrollTo({ left: Math.max(0, Math.min(part.slides.length - 1, k)) * track.clientWidth, behavior: "smooth" });
@@ -212,7 +212,7 @@
             const frame = el("figure", `case__screen case__screen--${s.device}`);
             const view = el("div", "case__screen-view");
             view.tabIndex = 0;
-            view.setAttribute("aria-label", s.caption || "сайт целиком");
+            view.setAttribute("aria-label", s.caption || "full website");
             const image = el("img");
             image.src = img(item, s.src);
             image.alt = s.caption || "";
@@ -242,7 +242,7 @@
   if (rest.length) {
     if (item.sections) {
       const block = el("section", "case-section");
-      block.append(el("h2", "case-section__title", "галерея"));
+      block.append(el("h2", "case-section__title", "gallery"));
       block.append(shots(rest, "case__gallery case-section__wide"));
       body.push(block);
     } else {
@@ -254,8 +254,8 @@
   const footer = el("footer", "case__footer");
   const others = [1, 2, 3].map((k) => cases[(index + k) % cases.length]).filter((c, k, arr) => c !== item && arr.indexOf(c) === k);
   const moreHead = el("div", "case__more-head");
-  moreHead.append(el("h2", "case-section__title", "ещё кейсы"));
-  const all = el("a", "case__all", "все проекты →");
+  moreHead.append(el("h2", "case-section__title", "more cases"));
+  const all = el("a", "case__all", "all projects →");
   all.href = "./projects.html";
   moreHead.append(all);
   footer.append(moreHead);

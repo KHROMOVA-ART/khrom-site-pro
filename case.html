@@ -1,49 +1,49 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Кейс — Екатерина Хромова</title>
+    <title>Case — Ekaterina Khromova</title>
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
-    <link rel="stylesheet" href="./styles.css?v=pro-2" />
-    <link rel="stylesheet" href="./cases.css?v=pro-2" />
+    <link rel="stylesheet" href="./styles.css?v=en-1" />
+    <link rel="stylesheet" href="./cases.css?v=en-1" />
   </head>
   <body class="case-body">
     <header class="case-nav">
-      <a class="case-nav__link" href="./index.html">екатерина хромова</a>
-      <a class="case-nav__link" href="./projects.html" id="case-back">← все проекты</a>
+      <a class="case-nav__link" href="./index.html">ekaterina khromova</a>
+      <a class="case-nav__link" href="./projects.html" id="case-back">← all projects</a>
     </header>
 
     <main class="case" id="case">
-      <p class="case__empty">Кейс не найден. <a href="./projects.html">Все проекты →</a></p>
+      <p class="case__empty">Case not found. <a href="./projects.html">All projects →</a></p>
     </main>
 
     <div class="lightbox" id="lightbox" aria-hidden="true">
-      <button class="lightbox__close" type="button" aria-label="Закрыть">закрыть</button>
-      <button class="lightbox__arrow lightbox__arrow--prev" type="button" aria-label="Предыдущее изображение">←</button>
+      <button class="lightbox__close" type="button" aria-label="Close">close</button>
+      <button class="lightbox__arrow lightbox__arrow--prev" type="button" aria-label="Previous image">←</button>
       <figure class="lightbox__figure">
         <img class="lightbox__img" alt="" />
         <figcaption class="lightbox__caption"></figcaption>
       </figure>
-      <button class="lightbox__arrow lightbox__arrow--next" type="button" aria-label="Следующее изображение">→</button>
+      <button class="lightbox__arrow lightbox__arrow--next" type="button" aria-label="Next image">→</button>
     </div>
 
-    <div class="board" id="board" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Доска проекта">
+    <div class="board" id="board" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project board">
       <div class="board__canvas" id="board-canvas"></div>
-      <p class="board__hint">тяните, чтобы двигаться · колесо или щипок — масштаб</p>
+      <p class="board__hint">drag to move · scroll or pinch to zoom</p>
       <div class="board__controls">
-        <button class="board__button" type="button" data-board="in" aria-label="Приблизить">+</button>
-        <button class="board__button" type="button" data-board="out" aria-label="Отдалить">−</button>
-        <button class="board__button board__button--wide" type="button" data-board="home">вся доска</button>
+        <button class="board__button" type="button" data-board="in" aria-label="Zoom in">+</button>
+        <button class="board__button" type="button" data-board="out" aria-label="Zoom out">−</button>
+        <button class="board__button board__button--wide" type="button" data-board="home">whole board</button>
       </div>
-      <button class="showcase__close board__close" type="button" aria-label="Закрыть доску"><span aria-hidden="true">x</span></button>
+      <button class="showcase__close board__close" type="button" aria-label="Close board"><span aria-hidden="true">x</span></button>
     </div>
 
-    <script src="./cases.js?v=pro-2"></script>
-    <script src="./canvas-board.js?v=pro-2"></script>
-    <script src="./case-page.js?v=pro-2"></script>
+    <script src="./cases.js?v=en-1"></script>
+    <script src="./canvas-board.js?v=en-1"></script>
+    <script src="./case-page.js?v=en-1"></script>
   </body>
 </html>

@@ -3,29 +3,29 @@
 window.TOOLS = [
   {
     id: "reels-montage",
-    title: "агент монтажа рилсов",
-    text: "Скилл для Claude Code: собирает рилс на Remotion из сырых видео. Расшифровывает речь через whisper и сверяет её со звуком, ставит поэтапные титры, вычищает паузы и междометия, добавляет моушн-врезки и фактуру, сводит звук и рендерит в одном из стилей — «коллаж», «архив», «крупный шрифт».",
-    files: [{ name: "reels-montage.zip", note: "скилл: инструкции, скрипты, компоненты Remotion" }],
+    title: "reels editing agent",
+    text: "A Claude Code skill that assembles a Remotion reel from raw footage. It transcribes speech with whisper and checks it against the audio, adds step-by-step captions, cuts pauses and filler words, adds motion inserts and texture, mixes the sound and renders in one of three styles: collage, archive or bold type.",
+    files: [{ name: "reels-montage.zip", note: "skill: instructions, scripts, Remotion components" }],
   },
   {
     id: "emoji-stickers",
-    title: "генератор хромированных эмодзи и стикеров",
-    text: "Python-движок, который превращает любую форму — глиф шрифта или нарисованную маску — в жидкий хром с отражениями в фирменных цветах. Собирает статичные PNG, анимированные WEBM и стикеры 512 px для Telegram, плюс контактные листы для проверки на тёмном и светлом фоне.",
+    title: "chrome emoji and sticker generator",
+    text: "A Python engine that turns any shape, a font glyph or a hand-drawn mask, into liquid chrome with reflections in brand colours. It outputs static PNGs, animated WEBMs and 512 px Telegram stickers, plus contact sheets for checking on dark and light backgrounds.",
     files: [
-      { name: "chrome-emoji-generator.zip", note: "скрипты генератора и инструкция" },
-      { name: "chrome-emoji-pack.zip", note: "готовый набор «Хром»: 31 эмодзи + 5 анимированных" },
+      { name: "chrome-emoji-generator.zip", note: "generator scripts and instructions" },
+      { name: "chrome-emoji-pack.zip", note: "ready-made Chrome pack: 31 emoji + 5 animated" },
     ],
   },
   {
     id: "covers",
-    title: "агент обложек для соцсетей",
-    text: "Помогает делать обложки для соцсетей в разы быстрее: держит стиль, шрифты и сетку.",
+    title: "social media cover agent",
+    text: "Makes social media covers several times faster while keeping the style, fonts and grid consistent.",
     files: [],
   },
   {
     id: "plugins",
-    title: "плагины для браузера и figma",
-    text: "Небольшие помощники, которые убирают рутину из ежедневной работы дизайнера.",
+    title: "browser and Figma plugins",
+    text: "Small helpers that take the routine out of a designer's daily work.",
     files: [],
   },
 ];
@@ -47,7 +47,7 @@ window.TOOLS = [
     if (tool.image) {
       const pic = el("img", "tools__image");
       pic.src = `./assets/tools/${tool.id}/${tool.image}`;
-      pic.alt = `${tool.title}: пример`;
+      pic.alt = `${tool.title}: example`;
       pic.loading = "lazy";
       info.append(pic);
     }
@@ -63,7 +63,7 @@ window.TOOLS = [
       li.append(a);
       files.append(li);
     }
-    if (!tool.files.length) files.append(el("li", "tools__soon", "файлы скоро появятся"));
+    if (!tool.files.length) files.append(el("li", "tools__soon", "files coming soon"));
     item.append(info, files);
     list.append(item);
   }
